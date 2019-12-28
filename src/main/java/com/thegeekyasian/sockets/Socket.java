@@ -3,6 +3,8 @@ package com.thegeekyasian.sockets;
 import com.thegeekyasian.utils.MessageDecoder;
 import com.thegeekyasian.utils.MessageEncoder;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.ProducerTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.OnClose;
@@ -23,6 +25,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Component
 @ServerEndpoint(value = "/webSocket", encoders = MessageEncoder.class, decoders = MessageDecoder.class)
 public class Socket {
+
+    @Autowired
+    ProducerTemplate producerTemplate;
+
     private Session session;
     public static Set<Socket> listeners = new CopyOnWriteArraySet<>();
 
@@ -38,7 +44,8 @@ public class Socket {
         try {
             this.session.getBasicRemote().sendText(message.toUpperCase());
 
-            // run in a second
+
+          /* // run in a second
             final long timeInterval = 1000;
             Runnable runnable = new Runnable() {
                 public void run() {
@@ -55,9 +62,12 @@ public class Socket {
                 }
             };
             Thread thread = new Thread(runnable);
-            thread.start();
+            thread.start();*/
 
+            Object object =  producerTemplate.asyncSendBody("direct:firstRoute", message);
+            //log.info("{}",object);
         } catch (IOException e) {
+            e.printStackTrace();
             log.error("Caught exception while sending message to Session Id: " + this.session.getId(), e.getMessage(), e);
         }
 
