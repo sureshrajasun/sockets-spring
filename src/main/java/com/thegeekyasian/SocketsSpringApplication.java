@@ -9,6 +9,9 @@ import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @SpringBootApplication
 public class SocketsSpringApplication {
 
@@ -17,6 +20,13 @@ public class SocketsSpringApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SocketsSpringApplication.class, args);
+	}
+
+	@Bean
+	public Map<String, String> myMap() {
+		final Map<String, String> myMap = new HashMap<>();
+		myMap.put("A", "a");
+		return myMap;
 	}
 
 	@Bean
